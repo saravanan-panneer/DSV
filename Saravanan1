@@ -1,0 +1,60 @@
+import pandas as pd
+import matplotlib.pyplot as plt
+
+df = pd.read_csv("your_dataset.csv")
+
+print(df.describe(include="all"))
+
+numeric_cols = df.select_dtypes(include=["int64", "float64"]).columns
+categorical_cols = df.select_dtypes(include=["object"]).columns
+
+for col in numeric_cols:
+    plt.figure()
+    plt.hist(df[col].dropna(), bins=20)
+    plt.title(f"Histogram of {col}")
+    plt.show()
+
+for col in numeric_cols:
+    plt.figure()
+    plt.boxplot(df[col].dropna())
+    plt.title(f"Boxplot of {col}")
+    plt.show()
+
+for col in numeric_cols:
+    plt.figure()
+    plt.plot(df[col])
+    plt.title(f"Line Plot of {col}")
+    plt.show()
+
+for col in categorical_cols:
+    plt.figure()
+    df[col].value_counts().plot(kind="bar")
+    plt.title(f"Bar Plot of {col}")
+    plt.show()
+
+for col in categorical_cols:
+    plt.figure()
+    df[col].value_counts().plot(kind="pie", autopct="%1.1f%%")
+    plt.title(f"Pie Chart of {col}")
+    plt.ylabel("")
+    plt.show()
+
+for i in range(len(numeric_cols)):
+    for j in range(i + 1, len(numeric_cols)):
+        plt.figure()
+        plt.scatter(df[numeric_cols[i]], df[numeric_cols[j]])
+        plt.title(f"{numeric_cols[i]} vs {numeric_cols[j]}")
+        plt.xlabel(numeric_cols[i])
+        plt.ylabel(numeric_cols[j])
+        plt.show()
+
+if len(numeric_cols) > 1:
+    corr = df[numeric_cols].corr()
+    plt.figure(figsize=(10, 8))
+    plt.imshow(corr)
+    plt.colorbar()
+    plt.xticks(range(len(numeric_cols)), numeric_cols, rotation=90)
+    plt.yticks(range(len(numeric_cols)), numeric_cols)
+    plt.title("Correlation Heatmap")
+    plt.tight_layout()
+    plt.show()
